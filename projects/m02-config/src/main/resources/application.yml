@@ -1,0 +1,42 @@
+# Config Clase 2. Los bloques "%perfil" sobreescriben el valor base.
+# Orden de precedencia (mayor a menor):
+#   1. System properties (-Dexchange.spread=0.5)
+#   2. Variables de entorno (EXCHANGE_SPREAD=0.5)
+#   3. .env en el directorio actual
+#   4. application.yml (este archivo)
+exchange:
+  #base-currency: PEN
+  spread: 0.05             # 2% de margen del banco
+  provider: config          # BUILD TIME: elige el bean RateProvider (config | fixed)
+  rates:                    # 1 PEN = x moneda
+    USD: 0.27
+    EUR: 0.25
+
+app:
+  name: m02-config
+  greeting-suffix: ${APP_SUFFIX:desde Yape}   # variable de entorno con valor por defecto
+
+"%dev":
+  quarkus:
+    http:
+      port: 8080
+    log:
+      category:
+        "pe.yape.training":
+          level: DEBUG
+  exchange:
+    spread: 0.00
+  BRL: 0.95 # en dev sin margen para facilitar pruebas
+
+"%test":
+  quarkus:
+    http:
+      test-port: 0          # puerto aleatorio en tests
+
+"%prod":
+  exchange:
+    spread: 0.015
+  quarkus:
+    log:
+      console:
+        json: false

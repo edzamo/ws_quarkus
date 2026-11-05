@@ -1,0 +1,4 @@
+quarkus:
+  http:
+    port: 8082          # product corre en 8080 y llama a este servicio
+    test-port: 0
