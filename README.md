@@ -35,26 +35,32 @@ Para `m04-product` levanta antes `m04-customer`.
 | M3 REST + Panache (sin front Vue) | ✅ |
 | **M6 Reactivo (Mutiny/Vert.x)** | 🟡 Clase 4 lista; **faltan los 3 retos del ejercicio 4** |
 | M7 Persistencia reactiva | 🔲 **siguiente** |
-| E1 Kafka · E2 Feature toggles · E3 Seguridad · E4 Observabilidad | 🔲 |
-| M4 GraalVM · M5 Docker · M8 GraphQL · M9 Upgrades | 🔲 |
-| E5 Testing · E6 Hexagonal · E7 Despliegue · E8 Integrador | 🔲 |
+| E1 Kafka · E3 Seguridad | 🔲 |
+| M8 GraphQL · M4 GraalVM · M5 Docker | 🔲 |
+| E2 Feature toggles · E7 Despliegue · E4 Observabilidad | 🔲 |
+| E5 Testing · E6 Hexagonal · E8 Integrador · M9 Upgrades | 🔲 |
 
 ## Ruta pendiente
 
+Primero **el código**, después **empaquetado**, al final **paso a producción**:
+
 ```
-Ejercicio 4 → M7 → E1 → E2 → E3 → E4 → M4 → M5 → M8 → E5 → E6 → E7 → E8 → M9
+CÓDIGO          Ejercicio 4 → M7 Persistencia reactiva → E1 Kafka → E3 Seguridad
+EMPAQUETADO     M8 GraphQL → M4 GraalVM → M5 Docker
+PRODUCCIÓN      E2 Feature toggles → E7 Despliegue → E4 Observabilidad
+CIERRE          E5 Testing → E6 Hexagonal → E8 Integrador → M9 Upgrades
 ```
 
-Primero lo que más pesa en el día a día (reactivo, persistencia, Kafka, toggles, seguridad, observabilidad); después nativo, Docker y GraphQL.
+Se parte de lo que se usa en cada servicio (reactivo, persistencia, mensajería, seguridad); nativo y contenedores vienen después, y los toggles se estudian junto al despliegue, donde se entiende para qué sirven.
 
 ### Módulos del curso por hacer
 
 | Módulo | Qué veremos | Ejercicio |
 |---|---|---|
 | **M7 Persistencia reactiva** ⭐ | Hibernate Reactive con Panache, cliente SQL reactivo, Dev Services con PostgreSQL, **Flyway**, `@WithTransaction`; cuándo usar ORM clásico vs reactivo | Migrar `customer` a PostgreSQL con Hibernate Reactive + Flyway |
+| **M8 GraphQL** | SmallRye GraphQL (`@Query`, `@Mutation`), cliente tipado, N+1; cuándo **no** usarlo | Exponer `customer` y `product` por GraphQL |
 | **M4 GraalVM** | `./mvnw package -Dnative` (con `container-build`, sin instalar GraalVM), reflexión, `@RegisterForReflection`, Mandrel | Compilar un proyecto a nativo y medir JVM vs native |
 | **M5 Docker** | Los 4 Dockerfiles que genera Quarkus, Jib, límites de recursos, probes, `quarkus-kubernetes` | Imagen JVM y nativa; comparar tamaños y verificar health |
-| **M8 GraphQL** | SmallRye GraphQL (`@Query`, `@Mutation`), cliente tipado, N+1; cuándo **no** usarlo | Exponer `customer` y `product` por GraphQL |
 | **M9 Upgrades** | `quarkus update` y breaking changes | Actualizar un proyecto antiguo |
 
 ### Módulos extra (no están en el curso, sí en nuestro stack)
