@@ -1,0 +1,25 @@
+quarkus:
+  datasource:
+    db-kind: h2
+    jdbc:
+      url: jdbc:h2:mem:beneficiarios;DB_CLOSE_DELAY=-1
+  hibernate-orm:
+    database:
+      generation: drop-and-create   # SOLO para aprender; en M7 se reemplaza por Flyway
+    log:
+      sql: false
+  smallrye-openapi:
+    info-title: API Beneficiarios Yape
+    info-version: 1.0.0
+
+"%dev":
+  quarkus:
+    hibernate-orm:
+      log:
+        sql: true
+      sql-load-script: import-dev.sql   # datos semilla solo en dev
+
+"%test":
+  quarkus:
+    hibernate-orm:
+      sql-load-script: no-file          # tests parten de BD vacía

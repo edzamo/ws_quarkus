@@ -1,0 +1,13 @@
+quarkus:
+  http:
+    test-port: 0
+  rest-client:
+    customer:
+      url: http://localhost:8082   # configKey = "customer"
+      connect-timeout: 500
+      read-timeout: 3000
+
+"%test":
+  quarkus:
+    log:
+      level: INFO

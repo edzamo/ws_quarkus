@@ -1,0 +1,2 @@
+INSERT INTO beneficiary(id, full_name, phone, alias, document_number, active, created_at) VALUES (nextval('beneficiary_seq'), 'Ana Torres', '987654321', 'Ana', '12345678', true, CURRENT_TIMESTAMP);
+INSERT INTO beneficiary(id, full_name, phone, alias, document_number, active, created_at) VALUES (nextval('beneficiary_seq'), 'Luis Quispe', '912345678', 'Luchito', '87654321', true, CURRENT_TIMESTAMP);
