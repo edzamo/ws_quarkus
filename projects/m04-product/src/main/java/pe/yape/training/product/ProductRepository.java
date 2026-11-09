@@ -9,10 +9,10 @@ import java.util.Map;
 public class ProductRepository {
 
     private final Map<Long, Product> data = Map.of(
-            1L, new Product(1L, "Cuenta Sueldo", new BigDecimal("0.00"), 1L),
-            2L, new Product(2L, "Tarjeta Yape", new BigDecimal("15.90"), 2L));
+        1L, new Product(1L, "Cuenta Sueldo", new BigDecimal("0.00"), 1L, "Cuenta de ahorros sin costo de mantenimiento"),
+        2L, new Product(2L, "Tarjeta Yape", new BigDecimal("15.90"), 2L, "Tarjeta de débito asociada a Yape"));
 
-    /** Uni vacío (null) = no existe. */
+  /** Uni vacío (null) = no existe. */
     public Uni<Product> findById(Long id) {
         return Uni.createFrom().item(data.get(id));
     }

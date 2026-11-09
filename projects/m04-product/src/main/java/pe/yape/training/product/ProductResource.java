@@ -9,6 +9,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
+import java.time.Duration;
 import java.util.Map;
 
 @Path("/products")
@@ -44,6 +45,41 @@ public class ProductResource {
             return owner.map(c -> new ProductDetail(p, c, "N/A".equals(c.tier())));
         });
     }
+
+    @GET
+    @Path("/{id}/summary")
+    public Uni<ProductSummary> summary(
+        @PathParam("id") Long id,
+        @QueryParam("customerId") long customerId,
+        @QueryParam("customerDelayMs") long customerDelayMs) {
+      // Versión inline (todo en un solo pipeline, sin variables intermedias):
+      // return Uni.combine().all()
+      //     .unis(get(id), customers.find(customerId, customerDelayMs), riskScore(id))
+      //     .with((p, c, r) -> new ProductSummary(p, c, r));
+
+      Uni<Product> product = get(id);
+      Uni<Customer> customer = customers.find(customerId, customerDelayMs);
+      Uni<RiskScore> risk = riskScore(id);
+
+      return Uni.combine().all()
+          .unis(product, customer, risk)
+          .with((p, c, r) -> new ProductSummary(p, c, r));
+    }
+
+
+  private Uni<RiskScore> riskScore(Long id) {
+    return Uni.createFrom().item(() -> new RiskScore(id, "N/A", Math.random()))
+        .onItem().delayIt().by(Duration.ofMillis(400));
+  }
+
+  private Uni<ProductSummary> combineAll(Uni<Product> product, Uni<Customer> customer, Uni<RiskScore> risk) {
+    return Uni.combine().all()
+        .unis(product, customer, risk).
+        with((p, c, r) -> new ProductSummary(p, c, r));
+  }
+
+
+
 
     /** Muestra el hilo: Uni => event loop (vert.x-eventloop-thread-N). */
     @GET
