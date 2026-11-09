@@ -3,6 +3,7 @@ package pe.yape.training.product;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.temporal.ChronoUnit;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
@@ -11,7 +12,8 @@ import org.jboss.logging.Logger;
 
 /**
  * Frontera con el servicio externo + resiliencia declarativa (SmallRye Fault Tolerance).
- * Orden de aplicación: Fallback( Retry( Timeout( llamada ) ) )
+ * Orden de aplicación (fijo por spec MicroProfile FT, no por orden de anotaciones en el código):
+ * Fallback( Retry( CircuitBreaker( Timeout( llamada ) ) ) )
  */
 @ApplicationScoped
 public class CustomerGateway {
@@ -25,6 +27,7 @@ public class CustomerGateway {
     }
 
     @Timeout(value = 800, unit = ChronoUnit.MILLIS)
+    @CircuitBreaker(requestVolumeThreshold = 4, failureRatio = 1.0, delay = 5000, delayUnit = ChronoUnit.MILLIS, successThreshold = 1)
     @Retry(maxRetries = 2, delay = 100, delayUnit = ChronoUnit.MILLIS)
     @Fallback(fallbackMethod = "unknownCustomer")
     public Uni<Customer> find(Long id, long delayMs) {

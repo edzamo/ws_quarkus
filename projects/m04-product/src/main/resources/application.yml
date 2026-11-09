@@ -11,3 +11,8 @@ quarkus:
   quarkus:
     log:
       level: INFO
+    vertx:
+      # Un solo hilo de event loop a propósito: así un Thread.sleep() bloqueante
+      # en ese único hilo bloquea TODAS las peticiones, haciendo el experimento
+      # del Reto 3 determinista y fácil de medir.
+      event-loops-pool-size: 1

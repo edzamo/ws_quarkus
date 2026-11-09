@@ -1,7 +1,9 @@
 package pe.yape.training.product;
 
 import io.smallrye.common.annotation.Blocking;
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.Path;
@@ -101,5 +103,48 @@ public class ProductResource {
     @Blocking
     public Uni<Map<String, String>> forcedBlocking() {
         return Uni.createFrom().item(() -> Map.of("thread", Thread.currentThread().getName()));
+    }
+
+    /**
+     * Reto 3 — A PROPÓSITO está roto: Thread.sleep() dentro de un Uni normal corre en el
+     * event loop (nadie le dijo que use otro hilo) y lo bloquea 2 s completos.
+     */
+    @GET
+    @Path("/{id}/report")
+    public Uni<Map<String, String>> report(@PathParam("id") Long id) {
+        return Uni.createFrom().item(() -> buildReport(id));
+    }
+
+    /** Solución (a): @Blocking fuerza el método entero a un worker thread. */
+    @GET
+    @Path("/{id}/report/blocking")
+    @Blocking
+    public Uni<Map<String, String>> reportBlocking(@PathParam("id") Long id) {
+        return Uni.createFrom().item(() -> buildReport(id));
+    }
+
+    /** Solución (b): hilo virtual (Java 21) por invocación, se puede bloquear sin costo de hilos de plataforma. */
+    @GET
+    @Path("/{id}/report/virtual-thread")
+    @RunOnVirtualThread
+    public Uni<Map<String, String>> reportVirtualThread(@PathParam("id") Long id) {
+        return Uni.createFrom().item(() -> buildReport(id));
+    }
+
+    /** Solución (c): mover la suscripción (y por tanto el Thread.sleep) al worker pool por defecto de Mutiny. */
+    @GET
+    @Path("/{id}/report/worker-pool")
+    public Uni<Map<String, String>> reportWorkerPool(@PathParam("id") Long id) {
+        return Uni.createFrom().item(() -> buildReport(id))
+                .runSubscriptionOn(Infrastructure.getDefaultWorkerPool());
+    }
+
+    private static Map<String, String> buildReport(Long id) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return Map.of("report", "listo-" + id, "thread", Thread.currentThread().getName());
     }
 }
