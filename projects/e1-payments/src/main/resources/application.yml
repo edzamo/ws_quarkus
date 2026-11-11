@@ -1,0 +1,24 @@
+quarkus:
+  http:
+    port: 8083
+    test-port: 0
+
+mp:
+  messaging:
+    # PRODUCTOR: REST -> topic "payments"
+    outgoing:
+      payments-out:
+        connector: smallrye-kafka
+        topic: payments
+    # CONSUMIDOR: topic "payments" -> PaymentConsumer
+    incoming:
+      payments-in:
+        connector: smallrye-kafka
+        topic: payments
+        auto:
+          offset:
+            reset: earliest
+        # Si el procesamiento hace nack, el mensaje va al topic "payments-dlq" y el consumo continúa.
+        failure-strategy: dead-letter-queue
+        dead-letter-queue:
+          topic: payments-dlq

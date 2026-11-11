@@ -1,0 +1,18 @@
+quarkus:
+  http:
+    port: 8082          # product corre en 8080 y llama a este servicio
+    test-port: 0
+  # Esquema SOLO por Flyway: Hibernate no toca el DDL (validate = falla si no coincide).
+  hibernate-orm:
+    schema-management:
+      strategy: none
+  flyway:
+    migrate-at-start: true
+  # Sin datasource.db-kind url/user: Dev Services levanta PostgreSQL en un contenedor (dev y test).
+  datasource:
+    db-kind: postgresql
+  # Para prod (se define por entorno):
+  #   %prod.quarkus.datasource.reactive.url / jdbc.url (Flyway usa JDBC; Hibernate Reactive usa el cliente reactivo)
+  hibernate-orm:
+    log:
+      sql: true

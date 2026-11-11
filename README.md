@@ -240,7 +240,8 @@ ws_quarkus/
 | M4 GraalVM | 🔲 |
 | M5 Docker | 🔲 |
 | M6 Reactivo (Vert.x/Mutiny) | 🟡 Clase 4 + proyectos listos, falta ejercicio |
-| M7 Persistencia reactiva | 🔲 |
+| M7 Persistencia reactiva | ✅ Clase 5 + ejercicio (Flyway, entidad ↔ esquema) |
 | M8 GraphQL | 🔲 |
 | M9 Upgrades | 🔲 |
-| E1–E8 Extras Yape | 🔲 |
+| E1 Kafka | 🟡 Clase 6 + proyecto e1-payments listos, falta ejercicio |
+| E2–E8 Extras Yape | 🔲 |
